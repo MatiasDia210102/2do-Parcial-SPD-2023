@@ -172,4 +172,4 @@ void encender_apagar_sistema(int estado_boton, LiquidCrystal lcd){
 }
 ~~~
 ## Links
--[ThinkerCad](https://www.tinkercad.com/things/4338Omh0dDd)
+-[ThinkerCad](https://www.tinkercad.com/things/gDc8l5pkKPX?sharecode=n40Y2fHl80ieNYe6nDtJyMAy1xl3gTsb8hnIfr_DyMs)
