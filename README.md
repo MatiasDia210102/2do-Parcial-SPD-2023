@@ -1,8 +1,8 @@
 # 1er-Parcial-SPD-2023
 # Proyecto
 
-<img src="https://github.com/MatiasDia210102/2do-Parcial-SPD-2023/blob/ba0cb7ee02de013e1447d13bf5c90f82dca8c2df/Imagenes/2do%20Parcial%20SPD%202023.PNG?raw=true"width="800"/>
-<img src="https://github.com/MatiasDia210102/2do-Parcial-SPD-2023/blob/4792d3fceef38e8976b2af0497af1512a557265b/Imagenes/Esquema_SPD.PNG?raw=true"width="800"/>
+<img src="https://github.com/MatiasDia210102/2do-Parcial-SPD-2023/blob/313e4837d546282e89042f8b7b6a8c4b53406451/Imagenes/2do%20Parcial%20SPD%202023.PNG?raw=true" width="800"/>
+<img src="https://github.com/MatiasDia210102/2do-Parcial-SPD-2023/blob/313e4837d546282e89042f8b7b6a8c4b53406451/Imagenes/Esquema_SPD.PNG?raw=true" width="800"/>
 
 ## Descripcion Programa
 AL presionar los botones el montacargas pasara por cada piso o frenara, encendiendo su respectivo led y marcandolo en el display
