@@ -38,9 +38,9 @@ Declaro cada prototipo de cada funcion
 void rotar_servo(int numero);
 void encender_o_apagar_led(int led, int led2, int high_low);
 void escribir_en_lcd(LiquidCrystal lcd, int columna, int fila, String texto, String contenido);
-void escribir_rotar_por_estacion(LiquidCrystal lcd, char* estacion, int temperatura);
+void iniciar_sistema(LiquidCrystal lcd, char* estacion, int temperatura);
 void determinar_estacion(int temperatura, LiquidCrystal lcd);
-void activar_desactivar_sistema(int estado_boton, LiquidCrystal lcd);
+void encender_apagar_sistema(int estado_boton, LiquidCrystal lcd);
 ~~~
 
 # Variables Globales
@@ -112,7 +112,7 @@ void escribir_en_lcd(LiquidCrystal lcd, int columna, int fila, String texto, Str
 }
 ~~~
 
-## escribir_rotar_por_estacion
+## iniciar_sistema
 Inicia el sistema de incendios
 ~~~C
 void iniciar_sistema(LiquidCrystal lcd, char* estacion, int temperatura){
