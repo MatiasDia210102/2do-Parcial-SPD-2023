@@ -1,255 +1,172 @@
-# 1er-Parcial-SPD-2023
+# 2do-Parcial-SPD-2023
 # Proyecto
-
 <img src="https://github.com/MatiasDia210102/2do-Parcial-SPD-2023/blob/313e4837d546282e89042f8b7b6a8c4b53406451/Imagenes/2do%20Parcial%20SPD%202023.PNG?raw=true" width="800"/>
+# Esquema
 <img src="https://github.com/MatiasDia210102/2do-Parcial-SPD-2023/blob/313e4837d546282e89042f8b7b6a8c4b53406451/Imagenes/Esquema_SPD.PNG?raw=true" width="800"/>
 
 ## Descripcion Programa
-AL presionar los botones el montacargas pasara por cada piso o frenara, encendiendo su respectivo led y marcandolo en el display
+Detectar cambios de temperatura y activar un servomotor en caso de detectar un incendio
 
-# Defines
-### Descripcion 
-Agrego los indices del display, leds y botones a cada pin del Arduino
-~~~C 
-
+# Importes
+Importo las bibliotecas para usar los componentes
+~~~C
 // C++ code
 // Matias Diaz DIV J TT
+#include <LiquidCrystal.h>
+#include <IRremote.h>
+#include <Servo.h>
 
-#define LEDROJO 10 
-#define LEDVERDE 9
-#define B 8
-#define A 7
-#define F 6
-#define G 5
-#define E 4
-#define D 3
-#define C 2
-
-#define BOTONPARA A0
-#define BOTOBAJA A1
-#define BOTONSUBE A2
+# Defines
+Agrego los componentes a los pines del arduino
+~~~C 
+#define D7 13
+#define D6 12
+#define D5 11
+#define D4 10
+#define RS 8
+#define E A1
+#define SENSORTEMP A0
+#define LEDVERDE 4
+#define LEDROJO 3 
+#define IR 2
 ~~~
+
 # Funciones
-### Descripcion 
 Declaro cada prototipo de cada funcion
 ~~~C 
-void mostrar_mensaje_led(int led, char* mensaje);
-void encender_apagar_led(int led, int led2);
-void encender_segmentos(int estado0, int estado1, int estado2, int estado3, int estado4, int estado5, int estado6);
-
-void encender_display(int numero);
-void imprimir_mensaje(char* mensaje, int contador);
-
-void mostrar_posicion_montacargas(char* mensaje, int contador, int led_high, int led_low);
-int recorrer_pisos(char* condicion, int contador, int numero, int led_high, int led_low);
-
-void ejecutar_programa(int estado_boton);
-int sumar_o_restar(char* condicion, int contador, int numero);
+void rotar_servo(int numero);
+void encender_o_apagar_led(int led, int led2, int high_low);
+void escribir_en_lcd(LiquidCrystal lcd, int columna, int fila, String texto, String contenido);
+void escribir_rotar_por_estacion(LiquidCrystal lcd, char* estacion, int temperatura);
+void determinar_estacion(int temperatura, LiquidCrystal lcd);
+void activar_desactivar_sistema(int estado_boton, LiquidCrystal lcd);
 ~~~
 
 # Variables Globales
+Declaro los componentes que usare en el programa y el estado de este
 ~~~C 
-int contador = 0;
 int estado_boton = 0;
-int paro;
+IRrecv sensor_ir(IR);
+LiquidCrystal lcd(RS,E,D4,D5,D6,D7);
+Servo myServo;
 ~~~
 # Setup
-### Descripcion 
-Configuro cada componente como salida o entrada digital
+Inicializo cada componente para usarlos
 ~~~C 
 void setup()
 {
-  for(int i = 2; i <= 10; i++){
-    pinMode(i, OUTPUT);
-  }
-  pinMode(BOTONPARA, INPUT);
-  pinMode(BOTOBAJA, INPUT_PULLUP);
-  pinMode(BOTONSUBE, INPUT_PULLUP);
-  Serial.begin(9600);
+  myServo.attach(9, 500, 2500);
+  pinMode(LEDVERDE, OUTPUT);
+  pinMode(LEDROJO, OUTPUT);
+  sensor_ir.begin(IR);
+  lcd.begin(16,2);
 }
 ~~~
 
 # Principal
-### Descripcion 
-Leo el estado del boton de parar que se encarga de la ejecucion del programa
+Cambio el estado de boton para encender u apagar el programa
 ~~~C 
 void loop()
 {
-  if(digitalRead(BOTONPARA) == HIGH){
-    estado_boton = !estado_boton;
-    delay(300);
-  } 
-  ejecutar_programa(estado_boton);
+   if(sensor_ir.decode() == 1){
+    if(sensor_ir.decodedIRData.command == 0){
+      
+      estado_boton = !estado_boton;
+      delay(200);
+    }
+    sensor_ir.resume(); 
+  }
+  activar_desactivar_sistema(estado_boton, lcd);
 }
 ~~~
-# LEDS
-## Descripcion
-Imprime el mensaje recibido del led que esta encendido
+
+## rotar_servo
+Gira el servo segun el numero recibido
 ~~~C 
-void mostrar_mensaje_led(int led, char* mensaje){
-  
-  if(digitalRead(led) == HIGH){Serial.println(mensaje);}
+void rotar_servo(int numero){
+  myServo.write(numero);
+  delay(200);
 }
 ~~~
-## Descripcion
-Enciende un led y apaga otro
+
+## encender_o_apagar_led
+Enciende o apaga el primer led recibido y apaga el segundo
 ~~~C 
-void encender_apagar_led(int led, int led2){
+void encender_o_apagar_led(int led, int led2, int high_low){
   
-  digitalWrite(led, HIGH);
+  digitalWrite(led, high_low);
   digitalWrite(led2, LOW);
 }
 ~~~
 
-# DISPLAY
-## Descripcion
-Enciende o apaga los segmentos del display
+## escribir_en_lcd
+Escribe un mensaje en el la pantalla en la posicion recibida
 ~~~C
-void encender_segmentos(int estado0, int estado1, int estado2, int estado3, int estado4, int estado5, int estado6){
-  digitalWrite(A, estado0);
-  digitalWrite(B, estado1);
-  digitalWrite(C, estado2);
-  digitalWrite(D, estado3);
-  digitalWrite(E, estado4);
-  digitalWrite(F, estado5);
-  digitalWrite(G, estado6);
+void escribir_en_lcd(LiquidCrystal lcd, int columna, int fila, String texto, String contenido){
+  
+  lcd.setCursor(columna, fila);
+  lcd.print(texto);
+  lcd.print(contenido);
+  lcd.print("          ");
 }
 ~~~
 
-## Descripcion
-Enciende un grupo de segmentos segun el numero recibido
+## escribir_rotar_por_estacion
+Inicia el sistema de incendios
 ~~~C
-void encender_display(int numero){
+void iniciar_sistema(LiquidCrystal lcd, char* estacion, int temperatura){
   
-  switch(numero) {
-    case 0:
-       encender_segmentos(HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, LOW);
-       break;
-    case 1:
-       encender_segmentos(LOW, HIGH, HIGH, LOW, LOW, LOW, LOW);
-       break;
-    case 2:
-      encender_segmentos(HIGH, HIGH, LOW, HIGH, HIGH, LOW, HIGH);
-      break;
-    case 3:
-      encender_segmentos(HIGH, HIGH, HIGH, HIGH, LOW, LOW, HIGH);
-      break;
-    case 4:
-      encender_segmentos(LOW, HIGH, HIGH, LOW, LOW, HIGH, HIGH);
-      break;
-    case 5:
-      encender_segmentos(HIGH, LOW, HIGH, HIGH, LOW, HIGH, HIGH);
-      break;
-    case 6:
-      encender_segmentos(HIGH, LOW, HIGH, HIGH, HIGH, HIGH, HIGH);
-      break;
-    case 7:
-      encender_segmentos(HIGH, HIGH, HIGH, LOW, LOW, LOW, LOW);
-      break;
-    case 8:
-      encender_segmentos(HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH);
-      break;
-    case 9:
-      encender_segmentos(HIGH, HIGH, HIGH, LOW, LOW, HIGH, HIGH);
-      break;
+  char contenido[10] = " ";
+  sprintf(contenido, "%d", temperatura);
+  
+  rotar_servo(90);
+  encender_o_apagar_led(LEDVERDE, LEDROJO, HIGH);
+  escribir_en_lcd(lcd, 0, 0, "Temperatura: ", contenido);
+  escribir_en_lcd(lcd, 0, 1, estacion, "");
+}
+~~~
+## determinar_estacion
+Determina la estacion del año segun el rango de temperatura
+~~~C
+void determinar_estacion(int temperatura, LiquidCrystal lcd){
+  
+  if(temperatura >= 24  && temperatura <= 40){
+    
+    escribir_rotar_por_estacion(lcd, "Verano", temperatura);
+  } else if(temperatura >= 16 && temperatura <= 23){
+    
+    escribir_rotar_por_estacion(lcd, "Primavera", temperatura);
+  } else if(temperatura >= 11 && temperatura <= 15){
+    
+    escribir_rotar_por_estacion(lcd, "Otonio", temperatura);
+  } else if(temperatura >= 2 && temperatura <= 10){
+    
+    escribir_rotar_por_estacion(lcd, "Invierno", temperatura);
+  } else {
+    
+    rotar_servo(0);
+    escribir_en_lcd(lcd, 0, 0, " !!!PELIGRO!!!", "");
+    escribir_en_lcd(lcd, 0, 1, "!HUMO DETECTADO!", "");
+    encender_o_apagar_led(LEDROJO, LEDVERDE, HIGH);
   }
 }
 ~~~
-# MENSAJE
-## Descripcion
-Imprime el mensaje recibido junto a un contador
+## encender_apagar_sistema
+Enciende o apaga el sistema de incendios segun el estado del boton
 ~~~C
-void imprimir_mensaje(char* mensaje, int contador){
+void encender_apagar_sistema(int estado_boton, LiquidCrystal lcd){
   
-  Serial.print(mensaje);
-  Serial.println(contador);
-}
-~~~
-# CONTADOR
-## Descripcion
-Le suma o resta un numero al contador recibido segun la condicion recibida
-~~~C
-int sumar_o_restar(char* condicion, int contador, int numero){
+  int lectura = analogRead(SENSORTEMP);
+  int temperatura = map(lectura, 20 , 358, 2 , 65);
   
-  if(condicion == "Menor"){
-    
-    if(contador < numero){
-      
-      contador++;
-    }
-  } else if(condicion == "Mayor"){
-    
-    if(contador > numero){
-      
-      contador--;
-    }
-  }
-  return contador;
-}
-~~~
-# MONTACARGAS
-## Descripcion
-Informa en el display y monitor en que piso se encuentra el montacargas
-~~~C
-void mostrar_posicion_montacargas(char* mensaje, int contador, int led_high, int led_low){
-  
-  encender_display(contador); 
-  encender_apagar_led(led_high, led_low);
-  mostrar_mensaje_led(led_high, mensaje);
-  imprimir_mensaje("Se encuentra en el piso ", contador);
-}
-~~~
-# PISOS
-## Descripcion
-Informa si el montacargas esta en movimiento o no y si llego a su destino
-~~~C
-int recorrer_pisos(char* condicion, int contador, int numero, int led_high, int led_low){
-  //en que piso esta
-  mostrar_posicion_montacargas("\nMontacargas en movimiento",contador, led_high, led_low);
-  contador = sumar_o_restar(condicion, contador, numero);
-  delay(3000); // tiempo entre pisos
-  
-  //a que piso llego
-  mostrar_posicion_montacargas("Montacargas en espera",contador, led_low, led_high);
-  return contador;
-}
-~~~
-# BOTONES
-## Descripcion
-Recorre los pisos segun que boton se presione o para el montacargas
-~~~C
-void ejecutar_programa(int estado_boton){
-  
-  if(estado_boton == LOW){
-    if(paro == 0){
+  if(estado_boton == 1){
 
-       Serial.println("\nMontacargas en espera. Presione un boton ");
-       paro = 1;
-    }
-   
-    if(digitalRead(BOTONSUBE) == LOW){
-      if(contador < 9){
-        
-        contador = recorrer_pisos(estado_boton, "Menor", contador, 9, LEDVERDE, LEDROJO);
-      } else {
-        mostrar_posicion_montacargas("No puede subir", contador, LEDROJO, LEDVERDE);
-      	delay(300);
-      }
-    }
+    determinar_estacion(temperatura, lcd);
+  } else {
     
-    if(digitalRead(BOTOBAJA) == LOW){
-      
-      if(contador > 0){
-      	contador = recorrer_pisos(estado_boton, "Mayor", contador, 0, LEDVERDE, LEDROJO);
-      } else {
-		mostrar_posicion_montacargas("No puede bajar",contador, LEDROJO, LEDVERDE);
-        delay(300);
-      }
-    }
-  } else if(estado_boton == HIGH && paro == 1){
-    
-    mostrar_posicion_montacargas("\nMontacargas detenido",contador, LEDROJO, LEDVERDE);
-    paro = 0;
+    encender_o_apagar_led(LEDROJO, LEDVERDE, LOW);
+    rotar_servo(0);
+    lcd.clear();
   }
 }
 ~~~
