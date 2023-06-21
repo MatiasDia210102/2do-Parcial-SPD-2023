@@ -5,7 +5,7 @@
 # Esquema
 <img src="https://github.com/MatiasDia210102/2do-Parcial-SPD-2023/blob/313e4837d546282e89042f8b7b6a8c4b53406451/Imagenes/Esquema_SPD.PNG?raw=true" width="800"/>
 
-## Descripcion Programa
+# Descripcion Programa
 Detectar cambios de temperatura y activar un servomotor en caso de detectar un incendio
 
 # Importes
@@ -32,7 +32,7 @@ Agrego los componentes a los pines del arduino
 #define IR 2
 ~~~
 
-# Funciones
+# Prototipos
 Declaro cada prototipo de cada funcion
 ~~~C 
 void rotar_servo(int numero);
@@ -80,7 +80,7 @@ void loop()
   activar_desactivar_sistema(estado_boton, lcd);
 }
 ~~~
-
+# Funciones
 ## rotar_servo
 Gira el servo segun el numero recibido
 ~~~C 
