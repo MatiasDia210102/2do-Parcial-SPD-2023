@@ -1,6 +1,7 @@
 # 2do-Parcial-SPD-2023
 # Proyecto
 <img src="https://github.com/MatiasDia210102/2do-Parcial-SPD-2023/blob/313e4837d546282e89042f8b7b6a8c4b53406451/Imagenes/2do%20Parcial%20SPD%202023.PNG?raw=true" width="800"/>
+
 # Esquema
 <img src="https://github.com/MatiasDia210102/2do-Parcial-SPD-2023/blob/313e4837d546282e89042f8b7b6a8c4b53406451/Imagenes/Esquema_SPD.PNG?raw=true" width="800"/>
 
