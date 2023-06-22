@@ -66,7 +66,7 @@ void setup()
 ~~~
 
 # Principal
-Cambio el estado de boton para encender u apagar el programa
+Cambio el estado de boton para encender o apagar el programa
 ~~~C 
 void loop()
 {
