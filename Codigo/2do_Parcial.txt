@@ -29,9 +29,9 @@ Servo myServo;
 void rotar_servo(int numero);
 void encender_o_apagar_led(int led, int led2, int high_low);
 void escribir_en_lcd(LiquidCrystal lcd, int columna, int fila, String texto, String contenido);
-void escribir_rotar_por_estacion(LiquidCrystal lcd, char* estacion, int temperatura);
+void iniciar_sistema(LiquidCrystal lcd, char* estacion, int temperatura);
 void determinar_estacion(int temperatura, LiquidCrystal lcd);
-void activar_desactivar_sistema(int estado_boton, LiquidCrystal lcd);
+void encender_apagar_sistema(int estado_boton, LiquidCrystal lcd);
 
 void setup(){
   
@@ -52,7 +52,7 @@ void loop(){
     }
     sensor_ir.resume(); 
   }
-  activar_desactivar_sistema(estado_boton, lcd);
+  encender_apagar_sistema(estado_boton, lcd);
 }
 
 void rotar_servo(int numero){
@@ -68,13 +68,13 @@ void encender_o_apagar_led(int led, int led2, int high_low){
 
 void escribir_en_lcd(LiquidCrystal lcd, int columna, int fila, String texto, String contenido){
   
+  lcd.print("          ");
   lcd.setCursor(columna, fila);
   lcd.print(texto);
   lcd.print(contenido);
-  lcd.print("          ");
 }
 
-void escribir_rotar_por_estacion(LiquidCrystal lcd, char* estacion, int temperatura){
+void iniciar_sistema(LiquidCrystal lcd, char* estacion, int temperatura){
   
   char contenido[10] = " ";
   sprintf(contenido, "%d", temperatura);
@@ -89,16 +89,16 @@ void determinar_estacion(int temperatura, LiquidCrystal lcd){
   
   if(temperatura >= 24  && temperatura <= 40){
     
-    escribir_rotar_por_estacion(lcd, "Verano", temperatura);
+    iniciar_sistema(lcd, "Verano", temperatura);
   } else if(temperatura >= 16 && temperatura <= 23){
     
-    escribir_rotar_por_estacion(lcd, "Primavera", temperatura);
+    iniciar_sistema(lcd, "Primavera", temperatura);
   } else if(temperatura >= 11 && temperatura <= 15){
     
-    escribir_rotar_por_estacion(lcd, "Otonio", temperatura);
+    iniciar_sistema(lcd, "Otonio", temperatura);
   } else if(temperatura >= 2 && temperatura <= 10){
     
-    escribir_rotar_por_estacion(lcd, "Invierno", temperatura);
+    iniciar_sistema(lcd, "Invierno", temperatura);
   } else {
     
     rotar_servo(0);
@@ -108,7 +108,7 @@ void determinar_estacion(int temperatura, LiquidCrystal lcd){
   }
 }
 
-void activar_desactivar_sistema(int estado_boton, LiquidCrystal lcd){
+void encender_apagar_sistema(int estado_boton, LiquidCrystal lcd){
   
   int lectura = analogRead(SENSORTEMP);
   int temperatura = map(lectura, 20 , 358, 2 , 65);
