@@ -17,7 +17,7 @@ Importo las bibliotecas para usar los componentes
 #include <IRremote.h>
 #include <Servo.h>
 
-# Defines
+#Defines
 Agrego los componentes a los pines del arduino
 ~~~C 
 #define D7 13
