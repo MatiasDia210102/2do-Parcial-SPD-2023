@@ -16,8 +16,9 @@ Importo las bibliotecas para usar los componentes
 #include <LiquidCrystal.h>
 #include <IRremote.h>
 #include <Servo.h>
+~~~
 
-#Defines
+# Defines
 Agrego los componentes a los pines del arduino
 ~~~C 
 #define D7 13
