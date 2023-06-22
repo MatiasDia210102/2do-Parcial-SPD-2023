@@ -45,7 +45,7 @@ void encender_apagar_sistema(int estado_boton, LiquidCrystal lcd);
 ~~~
 
 # Variables Globales
-Declaro los componentes que usare en el programa y el estado de este
+Declaro las variables globales que usare en el programa
 ~~~C 
 int estado_boton = 0;
 IRrecv sensor_ir(IR);
@@ -106,10 +106,10 @@ Escribe un mensaje en el la pantalla en la posicion recibida
 ~~~C
 void escribir_en_lcd(LiquidCrystal lcd, int columna, int fila, String texto, String contenido){
   
+  lcd.print("          ");
   lcd.setCursor(columna, fila);
   lcd.print(texto);
   lcd.print(contenido);
-  lcd.print("          ");
 }
 ~~~
 
